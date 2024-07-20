@@ -59,12 +59,18 @@ async def send_to_webhooks(interaction: discord.Interaction, message: discord.Me
         webhook = DiscordWebhook(url=webhook_url, username="Jeet Journal", content=message_content)
 
         if attachment_urls:
+            i = 0
             for url in attachment_urls:
+                i+=1
                 response = requests.get(url)
                 if response.status_code == 200:
                     # Extract filename from URL
                     filename = extract_filename(url)
+                    # Append the index to the filename
+                    base, ext = os.path.splitext(filename)
+                    filename = f"{base}{i}{ext}"
                     webhook.add_file(file=response.content, filename=filename)
+                    print(webhook)
                 else:
                     print(f"Failed to fetch image from {url}")
 
